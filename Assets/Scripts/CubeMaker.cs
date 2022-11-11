@@ -11,6 +11,9 @@ public class CubeMaker : MonoBehaviour
     int landWidth = 50;
     int landLength = 50;
 
+    float noiseScale = 5f;
+    float heightScale = 20f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +24,8 @@ public class CubeMaker : MonoBehaviour
     void CubeFactory(){
         for(int x = 0; x < landWidth; x++){
             for(int y = 0; y < landLength; y++){
-                Vector3 newPos = new Vector3(x, 0, y);
+                float newHeight = MakeSomeNoise(x, y);
+                Vector3 newPos = new Vector3(x, newHeight, y);
                 CubeAssembler(newPos);
             }
         }
@@ -32,6 +36,14 @@ public class CubeMaker : MonoBehaviour
         newCube.transform.position = pos;
         newCube.AddComponent<BoxCollider>();
         newCube.GetComponent<Renderer>().material = blueMat;
+    }
+
+    float MakeSomeNoise(int x, int y)
+    {
+        float xSpot = (float)x / landWidth * noiseScale;
+        float ySpot = (float)y / landLength * noiseScale;
+        float myNoise = Mathf.PerlinNoise(xSpot, ySpot);
+        return myNoise * heightScale;
     }
 
 }
